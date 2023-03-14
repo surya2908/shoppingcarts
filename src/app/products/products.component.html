@@ -1,0 +1,84 @@
+<h1 class="bg bg-warning"> <b> Shopping Carts </b></h1>
+
+<h3 > <label for="View Carts"><b> <button (click)="showViewCarts()" class="btn btn-danger"><i class="bi bi-cart-check-fill"></i> My Carts :{{cartCount}}</button></b></label> </h3>
+
+<div class="srcBox"  *ngIf="!isView"> <input type="text" placeholder="Search products" [(ngModel)]="searchTxt" class="srcBox"></div> &nbsp; <br> <br>
+
+<div class="alert alert-success" *ngIf="msg">{{msg}}</div>
+<div class="alert alert-danger" *ngIf="errorMsg">{{errorMsg}}</div><br>
+
+
+<button class="btn btn-secondary " (click)="addProduct()" *ngIf="!isView"> Add products </button>
+
+<div *ngIf="isAddProduct">
+  <form #f="ngForm"  action="">
+  <div>
+    <input type="text" placeholder="Product Name" name="pdtName" ngModel ><br><br>
+    <input type="text" placeholder="Product Amount" name="pdtPrice" ngModel > <br><br>
+    <input type="file" ngModel name="pdtimg" (change)="image($event)" > <br><br>
+    <input type="submit" class="btn btn-success" value="Submit" (click)="submit(f)" >
+  </div>
+</form>
+</div>
+
+<app-view-carts [myCarts]="viewCarts"></app-view-carts>
+<ng-container *ngIf="!isView">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>S.no</th>
+        <th>Products</th>
+        
+        <th>price</th>
+        <th>Qty</th>
+
+      </tr>
+    </thead>
+
+    <tr *ngFor="let pdt of productList | filter: searchTxt ; index as i  ">
+      <td>{{i+1}}</td>
+      <td> <img src="assets/images/{{pdt.id}}.jpg" height="200px" width="300px">
+        <b> {{pdt.pdtname | titlecase}} </b>
+       </td>
+      
+      <td>{{pdt.pdtprice | currency:'INR'}}</td>
+      <td><button (click)="subQty(i)" [disabled]="pdt.pdtqty===0"><i class="bi bi-dash-lg"></i></button>{{pdt.pdtqty}} <button
+          (click)="addQty(i)"><i class="bi bi-plus-lg"></i></button></td>
+      <td><button class="btn btn-warning" (click)="addCart(pdt)">Add to Cart</button></td>
+
+
+    </tr>
+
+  </table>
+</ng-container>
+
+<!-- <h3   > <label for="View Carts"> View Carts :{{cartCount}} </label></h3> -->
+<ng-container *ngIf="isView">
+  <table class="table">
+    <thead >
+      <tr>
+        <th ><b> S.no</b></th>
+        <th ><b> Products</b></th>
+        <th><b> price</b></th>
+        <th><b> Qty</b></th>
+        <th><b> Total </b></th>
+
+      </tr>
+    </thead>
+
+    <tr *ngFor="let view of viewCarts ; index as i">
+      <td>{{i+1}}</td>
+      <td><img src="assets/images/{{view.id}}.jpg" height="200px" width="250px">{{view.pdtname | titlecase}}</td>
+      
+      <td>{{view.pdtprice | currency:'INR'}}</td>
+      <td>{{view.pdtqty}}</td>
+      <td>{{view.pdtprice*view.pdtqty | currency:'INR' }}</td>
+      <td><button class="btn btn-danger" (click)="removeCart(i)">Remove to Cart</button></td>
+
+    </tr>
+
+
+  </table>
+  <b class='spn'> Total:{{totAmt}}</b> <br>
+
+</ng-container>
